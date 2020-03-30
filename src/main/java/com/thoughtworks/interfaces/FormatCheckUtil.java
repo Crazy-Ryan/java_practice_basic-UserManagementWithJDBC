@@ -28,7 +28,7 @@ public class FormatCheckUtil {
         String nameFormat = ".{2,10}";
         String phoneFormat = "^1\\d{10}";
         String emailFormat = ".+@.+";
-        String passwordFormat = ".*((\\d.*[a-zA-z])|([a-zA-z].*\\d)).*";
+        String passwordFormat = "(?=^.{8,16}$).*((\\d.*[a-zA-z])|([a-zA-z].*\\d)).*";
 
         registerPattern = Pattern.compile(registerFormat);
         loginPattern = Pattern.compile(loginFormat);

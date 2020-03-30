@@ -11,22 +11,27 @@ public class UserInterface {
 
 
     public void run() {
-        System.out.println("1.注册");
-        System.out.println("2.登录");
-        System.out.println("3.退出");
-        System.out.println("请输入你的选择(1~3)：");
-
-        Scanner scanner = new Scanner(System.in);
-        String mode = scanner.nextLine();
-        switch (mode) {
-            case "1":
-                break;
-            case "2":
-                break;
-            case "3":
-                break;
-            default:
-                break;
+        boolean exitFlag = false;
+        while (!exitFlag) {
+            System.out.println("1.注册");
+            System.out.println("2.登录");
+            System.out.println("3.退出");
+            System.out.println("请输入你的选择(1~3)：");
+            Scanner scanner = new Scanner(System.in);
+            String mode = scanner.nextLine();
+            switch (mode) {
+                case "1":
+                    registerHandler();
+                    break;
+                case "2":
+                    loginHandler();
+                    break;
+                case "3":
+                    exitFlag = true;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

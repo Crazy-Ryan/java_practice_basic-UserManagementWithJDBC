@@ -10,7 +10,6 @@ public class UserRepository implements UserRepositoryI {
 
     private final String TABLE_NAME = "user_info";
 
-
     @Override
     public boolean userRegister(User user) {
         Connection connection = DatabaseUtil.getConnection();
@@ -41,9 +40,8 @@ public class UserRepository implements UserRepositoryI {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
-            User fetchedUser = new User();
             if (resultSet.next()) {
-                fetchedUser = new User(
+                User fetchedUser = new User(
                         resultSet.getInt("id"),
                         resultSet.getString("username"),
                         resultSet.getString("phone"),
@@ -84,7 +82,6 @@ public class UserRepository implements UserRepositoryI {
             } else {
                 return new User();
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();
