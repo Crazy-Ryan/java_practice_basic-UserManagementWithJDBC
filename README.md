@@ -1,3 +1,20 @@
+## MySQL 建库建表语句
+
+```
+CREATE DATABASE tw_userManagement DEFAULT CHARSET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI;
+use tw_userManagement;
+CREATE TABLE user_info (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(40) NOT NULL,
+    phone VARCHAR(50),
+    email VARCHAR(100),
+    password CHAR(32)
+)  DEFAULT CHARSET UTF8MB4;
+
+alter table user_info add column locked Boolean default false;
+alter table user_info add column failed_login_count int default 0;
+```
+
 # 账号管理-命令行版
 
 ## 功能描述
