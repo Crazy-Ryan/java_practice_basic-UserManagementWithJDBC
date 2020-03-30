@@ -1,7 +1,7 @@
 package com.thoughtworks.entities;
 
 public class User {
-    private String id;
+    private int id;
     private String username;
     private String phone;
     private String email;
@@ -19,7 +19,7 @@ public class User {
         this.password = password;
     }
 
-    public User(String id, String username, String phone, String email, String password, int failedLoginCount, boolean locked) {
+    public User(int id, String username, String phone, String email, String password, int failedLoginCount, boolean locked) {
         this.id = id;
         this.username = username;
         this.phone = phone;
