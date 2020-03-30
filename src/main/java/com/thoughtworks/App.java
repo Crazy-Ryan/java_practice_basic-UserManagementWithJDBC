@@ -7,7 +7,7 @@ public class App {
         UserInterface userInterface = new UserInterface();
 //        userController.userRegister("yong,shou,you,mi");
 //        User result = userController.getUserByNameAndPassword("yong,mi");
-            userInterface.registerHandler();
+            userInterface.loginHandler();
 
             System.out.println(1);
     }

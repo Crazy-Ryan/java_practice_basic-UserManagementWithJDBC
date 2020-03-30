@@ -1,6 +1,7 @@
 package com.thoughtworks.interfaces;
 
 import com.thoughtworks.controllers.UserController;
+import com.thoughtworks.entities.User;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -36,6 +37,27 @@ public class UserInterface {
         }
     }
 
+    public void loginHandler() {
+        boolean isFinished = false;
+        while (!isFinished) {
+            User loginUser = userController.getUserByNameAndPassword(userLoginCollector());
+            if (loginUser.isLocked()) {
+                System.out.println("您已3次输错密码，账号被锁定");
+                isFinished = true;
+            } else {
+                if (null == loginUser.getUsername()) {
+                    System.out.println("密码或用户名错误");
+                    System.out.println("请重新输入用户名和密码：");
+                }
+                else {
+                    System.out.println(loginUser.getUsername() + "，欢迎回来！");
+                    System.out.println("您的手机号是"+loginUser.getPhone()+"，邮箱是"+loginUser.getEmail());
+                    isFinished = true;
+                }
+            }
+        }
+    }
+
     public String userRegisterCollector() {
         System.out.println("请输入注册信息(格式：用户名,手机号,邮箱,密码):");
         Scanner scanner = new Scanner(System.in);
@@ -65,5 +87,20 @@ public class UserInterface {
         return registerInput;
     }
 
-
+    public String userLoginCollector() {
+        System.out.println("请输入用户名和密码(格式：用户名,密码)：");
+        Scanner scanner = new Scanner(System.in);
+        boolean isInputFormatCorrect = false;
+        String loginInput = "";
+        while (!isInputFormatCorrect) {
+            loginInput = scanner.nextLine();
+            if (FormatCheckUtil.loginFormatCheck(loginInput)) {
+                isInputFormatCorrect = true;
+            } else {
+                System.out.println("格式错误");
+                System.out.println("请按正确格式输入用户名和密码：");
+            }
+        }
+        return loginInput;
+    }
 }

@@ -42,7 +42,7 @@ public class UserRepository implements UserRepositoryI {
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
             User fetchedUser = new User();
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 fetchedUser = new User(
                         resultSet.getInt("id"),
                         resultSet.getString("username"),
@@ -51,12 +51,41 @@ public class UserRepository implements UserRepositoryI {
                         resultSet.getString("password"),
                         resultSet.getInt("failed_login_count"),
                         resultSet.getBoolean("locked"));
-            }
-            if (password.equals(fetchedUser.getPassword())) {
-                return fetchedUser;
+
+                if (fetchedUser.isLocked()) {
+                    return new User(0, "", "", "", "", 0, true);
+                } else {
+                    if (password.equals(fetchedUser.getPassword())) {
+                        String sqlCmd = "UPDATE user_info SET failed_login_count = 0 "
+                                + " WHERE id = "
+                                + fetchedUser.getId();
+                        connection.createStatement().execute(sqlCmd);
+                        return fetchedUser;
+                    } else {
+                        int failedLoginCount = fetchedUser.getFailedLoginCount();
+                        if (failedLoginCount < 2) {
+                            String sqlCmd = "UPDATE user_info SET failed_login_count = "
+                                    + (failedLoginCount + 1)
+                                    + " WHERE id = "
+                                    + fetchedUser.getId();
+                            connection.createStatement().execute(sqlCmd);
+                            return new User();
+                        } else {
+                            String sqlCmd = "UPDATE user_info SET failed_login_count ="
+                                    + (failedLoginCount + 1)
+                                    + ", locked = true"
+                                    + " WHERE id = "
+                                    + fetchedUser.getId();
+                            connection.createStatement().execute(sqlCmd);
+                            return new User(0, "", "", "", "", 0, true);
+                        }
+                    }
+                }
             } else {
                 return new User();
             }
+
+
         } catch (Exception e) {
             e.printStackTrace();
             return new User();

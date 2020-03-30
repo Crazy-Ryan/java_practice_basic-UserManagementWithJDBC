@@ -24,7 +24,7 @@ public class FormatCheckUtil {
 
     static {
         String registerFormat = "[^,]+,[^,]+,[^,]+,[^,]+";
-        String loginFormat = "[^,]+,[^,]";
+        String loginFormat = "[^,]+,[^,]+";
         String nameFormat = ".{2,10}";
         String phoneFormat = "^1\\d{10}";
         String emailFormat = ".+@.+";
