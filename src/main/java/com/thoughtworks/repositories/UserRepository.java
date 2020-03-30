@@ -12,12 +12,13 @@ public class UserRepository implements UserRepositoryI {
 
     @Override
     public boolean userRegister(User user) {
-        Connection connection = DatabaseUtil.getConnection();
+        Connection connection = DatabaseUtil.connectToDB();
+        PreparedStatement preparedStatement = null;
         try {
             String sqlCmd = "INSERT INTO " + TABLE_NAME +
                     "(username,phone,email,password)" +
                     "values(" + "?,?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlCmd);
+            preparedStatement = connection.prepareStatement(sqlCmd);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPhone());
             preparedStatement.setString(3, user.getEmail());
@@ -27,19 +28,23 @@ public class UserRepository implements UserRepositoryI {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        } finally {
+            DatabaseUtil.releaseSource(connection, preparedStatement);
         }
     }
 
     @Override
     public User getUserByNameAndPassword(String name, String password) {
-        Connection connection = DatabaseUtil.getConnection();
+        Connection connection = DatabaseUtil.connectToDB();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
             String sqlQuery = "SELECT " +
                     "id,username,phone,email,password,failed_login_count,locked " +
                     "FROM " + TABLE_NAME + " WHERE username = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement = connection.prepareStatement(sqlQuery);
             preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 User fetchedUser = new User(
                         resultSet.getInt("id"),
@@ -86,6 +91,8 @@ public class UserRepository implements UserRepositoryI {
         } catch (Exception e) {
             e.printStackTrace();
             return new User();
+        } finally {
+            DatabaseUtil.releaseSource(connection, preparedStatement, resultSet);
         }
     }
 

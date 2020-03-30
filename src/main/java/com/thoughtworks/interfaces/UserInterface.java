@@ -9,17 +9,15 @@ import java.util.Scanner;
 public class UserInterface {
     private UserController userController = new UserController();
 
-
     public void run() {
         boolean exitFlag = false;
+        Scanner scanner = new Scanner(System.in);
         while (!exitFlag) {
             System.out.println("1.注册");
             System.out.println("2.登录");
             System.out.println("3.退出");
             System.out.println("请输入你的选择(1~3)：");
-            Scanner scanner = new Scanner(System.in);
-            String mode = scanner.nextLine();
-            switch (mode) {
+            switch (scanner.nextLine()) {
                 case "1":
                     registerHandler();
                     break;
@@ -35,14 +33,14 @@ public class UserInterface {
         }
     }
 
-    public void registerHandler() {
+    private void registerHandler() {
         String registerInput = userRegisterCollector();
         if (userController.userRegister(registerInput)) {
             System.out.println(registerInput.split(",")[0] + "，恭喜你注册成功！");
         }
     }
 
-    public void loginHandler() {
+    private void loginHandler() {
         boolean isFinished = false;
         while (!isFinished) {
             User loginUser = userController.getUserByNameAndPassword(userLoginCollector());
@@ -53,17 +51,16 @@ public class UserInterface {
                 if (null == loginUser.getUsername()) {
                     System.out.println("密码或用户名错误");
                     System.out.println("请重新输入用户名和密码：");
-                }
-                else {
+                } else {
                     System.out.println(loginUser.getUsername() + "，欢迎回来！");
-                    System.out.println("您的手机号是"+loginUser.getPhone()+"，邮箱是"+loginUser.getEmail());
+                    System.out.println("您的手机号是" + loginUser.getPhone() + "，邮箱是" + loginUser.getEmail());
                     isFinished = true;
                 }
             }
         }
     }
 
-    public String userRegisterCollector() {
+    private String userRegisterCollector() {
         System.out.println("请输入注册信息(格式：用户名,手机号,邮箱,密码):");
         Scanner scanner = new Scanner(System.in);
         boolean isInputFormatCorrect = false;
@@ -92,7 +89,7 @@ public class UserInterface {
         return registerInput;
     }
 
-    public String userLoginCollector() {
+    private String userLoginCollector() {
         System.out.println("请输入用户名和密码(格式：用户名,密码)：");
         Scanner scanner = new Scanner(System.in);
         boolean isInputFormatCorrect = false;

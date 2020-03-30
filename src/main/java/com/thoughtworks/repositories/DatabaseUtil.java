@@ -1,26 +1,72 @@
 package com.thoughtworks.repositories;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.io.FileReader;
+import java.net.URL;
+import java.sql.*;
+import java.util.Objects;
+import java.util.Properties;
 
 public class DatabaseUtil {
-    public static final String URL = "jdbc:mysql://localhost:3306/tw_usermanagement?useUnicode=true&characterEncoding=utf-8&serverTimezone=Hongkong";
-    public static final String USER = "root";
-    public static final String PASSWORD = "password";
-    private static Connection connection = null;
 
-    static{
+    private static String URL;
+    private static String USER;
+    private static String PASSWORD;
+    private static Connection connection;
+
+    static {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (ClassNotFoundException | SQLException e) {
+            Properties pro = new Properties();
+            ClassLoader classLoader = DatabaseUtil.class.getClassLoader();
+            URL pathURL = classLoader.getResource("jdbc.properties");
+            String path = Objects.requireNonNull(pathURL).getPath();
+            pro.load(new FileReader(path));
+            URL = pro.getProperty("url");
+            USER = pro.getProperty("user");
+            PASSWORD = pro.getProperty("password");
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static Connection getConnection(){
+    public static Connection connectToDB() {
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return connection;
     }
-}
 
+    public static void releaseSource(Connection conn, Statement pre) {
+        doubleClose(conn, pre);
+    }
+
+    public static void releaseSource(Connection conn, Statement pre, ResultSet res) {
+        if (null != res) {
+            try {
+                res.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        doubleClose(conn, pre);
+    }
+
+    private static void doubleClose(Connection conn, Statement pre) {
+        if (null != pre) {
+            try {
+                pre.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (null != conn) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

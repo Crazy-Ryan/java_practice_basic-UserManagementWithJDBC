@@ -5,8 +5,6 @@ import com.thoughtworks.repositories.UserRepository;
 import com.thoughtworks.repositories.UserRepositoryI;
 import org.springframework.util.DigestUtils;
 
-import java.util.List;
-
 public class UserService implements UserServiceI {
     private UserRepositoryI userRepository = new UserRepository();
 
