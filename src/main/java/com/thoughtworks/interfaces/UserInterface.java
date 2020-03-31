@@ -1,5 +1,8 @@
 package com.thoughtworks.interfaces;
 
+import com.alibaba.fastjson.JSON;
+
+import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.controllers.UserController;
 import com.thoughtworks.entities.User;
 
@@ -35,7 +38,7 @@ public class UserInterface {
 
     private void registerHandler() {
         String registerInput = userRegisterCollector();
-        if (userController.userRegister(registerInput)) {
+        if (Boolean.toString(true).equals(userController.userRegister(registerInput))) {
             System.out.println(registerInput.split(",")[0] + "，恭喜你注册成功！");
         }
     }
@@ -43,7 +46,15 @@ public class UserInterface {
     private void loginHandler() {
         boolean isFinished = false;
         while (!isFinished) {
-            User loginUser = userController.getUserByNameAndPassword(userLoginCollector());
+            JSONObject loginJO = JSON.parseObject( userController.getUserByNameAndPassword(userLoginCollector()));
+            User loginUser = new User(
+                    loginJO.getInteger("id"),
+                    loginJO.getString("username"),
+                    loginJO.getString("phone"),
+                    loginJO.getString("email"),
+                    loginJO.getString("password"),
+                    loginJO.getInteger("failedLoginCount"),
+                    loginJO.getBoolean("locked"));
             if (loginUser.isLocked()) {
                 System.out.println("您已3次输错密码，账号被锁定");
                 isFinished = true;
